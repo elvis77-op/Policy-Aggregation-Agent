@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package tacvm.v1;
+
+message EncryptedPayload {
+    string message_type = 1;
+    bytes encrypted_key = 2;
+    bytes nonce = 3;
+    bytes ciphertext = 4;
+    bytes authentication_tag = 5;
+}
+
+service ParticipantService {
+    rpc Challenge(ChallengeRequest) returns (ChallengeReply);
+    rpc VerifyQuote(QuoteVerificationRequest) returns (EncryptedPayload);
+}
+
+message ChallengeRequest {
+    string client_id = 1;
+}
+
+message ChallengeReply {
+    bytes nonce = 1;
+}
+
+message QuoteVerificationRequest {
+    string client_id = 1;
+    bytes quote = 2;
+    bytes attestation_public_key = 3;
+    bytes measurement_hash = 4;
+    bytes nonce = 5;
+    string policy_id = 6;
+}
+
+message QuoteVerificationReply {
+    bool accepted = 1;
+    string error_message = 2;
+    string participant_id = 3;
+    bytes policy = 4;
+    bytes policy_hash = 5;
+    bytes session_id = 6;
+}
